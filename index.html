@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOSUBR - Manual Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4A40E5;
+            --accent: #FF6B6B;
+            --success: #2fb45a;
+            --warning: #FFC107;
+            --dark: #2D2B55;
+            --light: #F8F9FC;
+            --gray: #8b8f98;
+            --border: #E1E5EB;
+            --card-bg: #FFFFFF;
+            --gradient-start: #6C63FF;
+            --gradient-end: #4A40E5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7ff 0%, #eef3fb 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
+        }
+
+        .logo i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 0;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 35px rgba(16, 24, 40, 0.1);
+            overflow: hidden;
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(16, 24, 40, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .icon-wrapper {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-wrapper i {
+            font-size: 22px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .timer-container {
+            text-align: center;
+            margin: 10px 0 25px;
+        }
+
+        .timer-label {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .timer {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--accent);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            letter-spacing: 1px;
+        }
+
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px 0 25px;
+        }
+
+        .qr-frame {
+            width: 240px;
+            height: 240px;
+            padding: 15px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(16, 24, 40, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .qr-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .amount {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+            padding: 0 10px;
+        }
+
+        .amount::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 2px;
+        }
+
+        .instructions {
+            text-align: center;
+            color: var(--gray);
+            font-size: 15px;
+            margin: 15px 0 25px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-size: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 16px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 16px;
+            outline: none;
+            background: #fafbff;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .btn {
+            padding: 16px 22px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-verify {
+            background: linear-gradient(90deg, #f0f2f5, #e4e7ec);
+            color: #555;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-verify:hover {
+            background: linear-gradient(90deg, #e4e7ec, #d8dce2);
+            transform: translateY(-2px);
+        }
+
+        .btn-complete {
+            background: linear-gradient(90deg, var(--success), #22a44b);
+            color: white;
+            width: 100%;
+            box-shadow: 0 8px 22px rgba(43, 162, 85, 0.25);
+            margin-top: 10px;
+        }
+
+        .btn-complete:hover {
+            background: linear-gradient(90deg, #22a44b, #1e9542);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(43, 162, 85, 0.35);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .helper-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .copy-amount {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .copy-amount:hover {
+            color: var(--secondary);
+        }
+
+        .note {
+            color: var(--gray);
+            text-align: center;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .payment-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .payment-option {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-option i {
+            font-size: 24px;
+            color: var(--dark);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-backdrop.active .modal {
+            transform: translateY(0);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--success), #22a44b);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(43, 162, 85, 0.3);
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .modal p {
+            color: var(--gray);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .card-header {
+                padding: 18px 20px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .timer {
+                font-size: 42px;
+            }
+            
+            .qr-frame {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .amount {
+                font-size: 28px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .btn-verify {
+                width: 100%;
+            }
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <h1>FOSUBR Payment</h1>
+            <p>Secure and fast payment processing</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>QR Scan Payment</h2>
+                <div class="icon-wrapper">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="timer-container">
+                    <div class="timer-label">Time Remaining</div>
+                    <div class="timer" id="countdown">05:00</div>
+                </div>
+
+                <div class="qr-container">
+                    <div class="qr-frame">
+                        <!-- Your QR Code -->
+                        <img src="https://i.ibb.co/zWhZ9ZVj/Whats-App-Image-2025-08-30-at-00-23-28-af6f9751.jpg" alt="QR Code for Payment">
+                    </div>
+                    
+                    <div class="amount">₹26.00</div>
+                    
+                    <p class="instructions">Scan the QR code using any UPI app like Paytm, PhonePe, Google Pay, or BHIM</p>
+                </div>
+
+                <div class="payment-options">
+                    <div class="payment-option">
+                        <i class="fab fa-google-pay"></i>
+                    </div>
+                    <div class="payment-option">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="payment-option">
+                        <i class="fab fa-amazon-pay"></i>
+                    </div>
+                    <div class="payment-option">
+                        <i class="fab fa-paypal"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="utr"><i class="fas fa-receipt"></i> Enter UTR / Transaction ID</label>
+                    <div class="input-group">
+                        <input id="utr" type="text" placeholder="e.g. 9A2H3K1L45" maxlength="64">
+                        <button id="verifyBtn" class="btn btn-verify">
+                            <i class="fas fa-check-circle"></i> Verify
+                        </button>
+                    </div>
+                </div>
+
+                <div class="helper-links">
+                    <span style="color: var(--gray); font-size: 14px;">
+                        <i class="fas fa-info-circle"></i> After payment, paste UTR here
+                    </span>
+                    <a class="copy-amount" id="copyAmountBtn">
+                        <i class="far fa-copy"></i> Copy Amount
+                    </a>
+                </div>
+
+                <button id="completeBtn" class="btn btn-complete" disabled>
+                    <i class="fas fa-lock"></i> Payment Complete
+                </button>
+
+                <p class="note">Payment will expire when timer reaches 00:00. You can re-initiate if it expires.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-backdrop" id="modal">
+        <div class="modal">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2>Payment Successful!</h2>
+            <p id="modalText">हमने आपकी payment info रिकॉर्ड कर ली है. आपके UTR: <strong id="modalUTR"></strong></p>
+            <button id="closeModal" class="btn btn-verify">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2023 FOSUBR Payments • Secure & Encrypted</p>
+    </div>
+
+    <script>
+        // ====== Config =======
+        const START_SECONDS = 300; // 5 minutes default
+        const amount = 26; // change amount here if needed
+
+        // ====== Timer logic ======
+        let remaining = START_SECONDS;
+        const countdownEl = document.getElementById('countdown');
+        const completeBtn = document.getElementById('completeBtn');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const utrInput = document.getElementById('utr');
+        const modal = document.getElementById('modal');
+        const modalUTR = document.getElementById('modalUTR');
+        const modalText = document.getElementById('modalText');
+        const closeModal = document.getElementById('closeModal');
+        const copyAmountBtn = document.getElementById('copyAmountBtn');
+        const amountDisplay = document.querySelector('.amount');
+
+        function formatTime(s){
+            const mm = String(Math.floor(s/60)).padStart(2,'0');
+            const ss = String(s % 60).padStart(2,'0');
+            return mm + ':' + ss;
+        }
+
+        function tick(){
+            if(remaining <= 0){
+                countdownEl.textContent = '00:00';
+                // disable actions
+                verifyBtn.disabled = true;
+                completeBtn.disabled = true;
+                countdownEl.style.color = '#e53935';
+                return;
+            }
+            remaining--;
+            countdownEl.textContent = formatTime(remaining);
+            // flash when less than 1 minute
+            if(remaining <= 60){
+                countdownEl.classList.add('pulse');
+            } else {
+                countdownEl.classList.remove('pulse');
+            }
+        }
+
+        // initialize display
+        countdownEl.textContent = formatTime(START_SECONDS);
+
+        // start interval
+        const timerInterval = setInterval(()=>{
+            tick();
+            if(remaining <= 0) clearInterval(timerInterval);
+        }, 1000);
+
+        // ====== UTR validation ======
+        function isValidUTR(v){
+            // basic check: length 6-64, alphanumeric and -_/ allowed
+            if(!v) return false;
+            const trimmed = v.trim();
+            if(trimmed.length < 6 || trimmed.length > 64) return false;
+            return /^[A-Za-z0-9\-_\/]+$/.test(trimmed);
+        }
+
+        verifyBtn.addEventListener('click', ()=>{
+            const v = utrInput.value;
+            if(!isValidUTR(v)){
+                alert('कृपया सही UTR डालें (6-64 अक्षर; letters, numbers, -, _, / मान्य हैं).');
+                return;
+            }
+            // simulate verification success
+            completeBtn.disabled = false;
+            verifyBtn.textContent = ' Verified';
+            verifyBtn.disabled = true;
+            utrInput.disabled = true;
+            verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verified';
+            alert('UTR accepted. अब "Payment Complete" दबाएँ।');
+        });
+
+        // enable verify by pressing Enter
+        utrInput.addEventListener('keydown', (e)=>{
+            if(e.key === 'Enter') {
+                verifyBtn.click();
+            }
+        });
+
+        // Complete button action
+        completeBtn.addEventListener('click', ()=>{
+            const v = utrInput.value.trim();
+            if(!isValidUTR(v)){
+                alert('कृपया पहले UTR डालकर Verify करें।');
+                return;
+            }
+            // show modal
+            modal.classList.add('active');
+            modalUTR.textContent = v;
+            // In a real app you would send this to server via fetch/ajax
+            // Example: fetch('/payments/manual', {method:'POST', body: JSON.stringify({utr:v, amount})})
+        });
+
+        closeModal.addEventListener('click', ()=>{
+            modal.classList.remove('active');
+        });
+
+        // copy amount helper
+        copyAmountBtn.addEventListener('click', ()=>{
+            const payload = '₹' + amount;
+            navigator.clipboard?.writeText(payload).then(()=> {
+                copyAmountBtn.innerHTML = '<i class="far fa-copy"></i> Copied!';
+                setTimeout(()=> copyAmountBtn.innerHTML = '<i class="far fa-copy"></i> Copy Amount', 2000);
+            }).catch(()=> {
+                alert('Clipboard unsupported — amount: ' + payload);
+            });
+        });
+
+        // accessibility: focus on UTR
+        utrInput.focus();
+    </script>
+</body>
+</html>
